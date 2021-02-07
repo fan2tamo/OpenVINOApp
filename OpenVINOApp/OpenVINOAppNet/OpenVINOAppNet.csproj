@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64</Platforms>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if &quot;$(ConfigurationName)&quot; == &quot;Debug&quot; (&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\deployment_tools\inference_engine\external\tbb\bin\tbb_debug.dll&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\deployment_tools\ngraph\lib\ngraphd.dll&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\deployment_tools\ngraph\lib\onnx_importerd.dll&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\opencv\bin\opencv_imgproc451d.dll&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\opencv\bin\opencv_core451d.dll&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\opencv\bin\opencv_imgcodecs451d.dll&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\inference_engine\bin\intel64\$(Configuration)&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;if &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\deployment_tools\inference_engine\external\tbb\bin\tbb.dll&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\deployment_tools\ngraph\lib\ngraph.dll&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\deployment_tools\ngraph\lib\onnx_importer.dll&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\opencv\bin\opencv_imgproc451.dll&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\opencv\bin\opencv_core451.dll&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\opencv\bin\opencv_imgcodecs451.dll&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;xcopy &quot;C:\Program Files (x86)\Intel\openvino_2021\inference_engine\bin\intel64\$(Configuration)&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;)&#xD;&#xA;xcopy &quot;$(SolutionDir)MyOpenVINO\x64\$(Configuration)\MyOpenVINO.dll&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;xcopy &quot;$(SolutionDir)OpenVINOAppCpp\Data\&quot; &quot;$(TargetDir)&quot; /D /S /R /Y /I /K&#xD;&#xA;" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyOpenVINO\MyOpenVINO.vcxproj" />
+  </ItemGroup>
+
+</Project>
