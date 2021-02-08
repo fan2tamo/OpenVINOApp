@@ -14,7 +14,7 @@ MyOpenVINOImpl::MyOpenVINOImpl()
 {
 	this->pCallbackHandler = NULL;
 	inferCounter = 0;
-	semhd = CreateSemaphore(NULL, 1, 1, L"SemName");
+	semhd = CreateSemaphore(NULL, INFER_NUM, INFER_NUM, L"SemName");
 }
 
 MyOpenVINOImpl::~MyOpenVINOImpl()
@@ -51,12 +51,6 @@ bool MyOpenVINOImpl::Initialize(const NetworkInfo &networkInfo)
 	}
 	
 	ret = LoadNetwork(networkInfo.devices, networkInfo.isMultiDevices);
-	if (ret == false)
-	{
-		return ret;
-	}
-
-	ret = CreateInferRequest(networkInfo.inferRequestNum);
 
 	return ret;
 }
@@ -68,10 +62,9 @@ bool MyOpenVINOImpl::Initialize(const NetworkInfo &networkInfo)
 /// <returns></returns>
 std::vector<float>  MyOpenVINOImpl::InferSync(const std::wstring& imageName)
 {
-	OutputDebugStringW(L"Test");
+	InferenceEngine::InferRequest inferRequest = CreateInferRequest(networkInfo.inferRequestNum);
 
-
-	SetInputData(imageName);
+	SetInputData(inferRequest, imageName);
 	inferRequest.Infer();
 	std::vector<float> outputVect;
 	InferenceEngine::SizeVector dims = inferRequest.GetBlob(outputLayerName)->getTensorDesc().getDims();
@@ -104,7 +97,11 @@ int MyOpenVINOImpl::InferASync(const std::wstring& imageName)
 {
 	int inferID = inferCounter;
 	inferCounter += 1;
-	inferMap[inferID] = imageName;
+
+	InferenceEngine::InferRequest inferRequest = CreateInferRequest(networkInfo.inferRequestNum);
+
+	InferInfo inferInfo(inferRequest, imageName);
+	inferMap[inferID] = inferInfo;
 	std::thread* th = NULL;
 
 	// ‰i‹v‚É‘Ò‚Â
@@ -310,10 +307,10 @@ bool MyOpenVINOImpl::SetOptimalNumberOfInferRequests(unsigned long &inferRequest
 	return ret;
 }
 
-bool MyOpenVINOImpl::CreateInferRequest(const unsigned long inferRequestsNum)
+InferenceEngine::InferRequest MyOpenVINOImpl::CreateInferRequest(const unsigned long inferRequestsNum)
 {
 	bool ret = true;
-
+	InferenceEngine::InferRequest inferRequest;
 	try
 	{
 		inferRequest = executableNetwork.CreateInferRequest();
@@ -326,13 +323,13 @@ bool MyOpenVINOImpl::CreateInferRequest(const unsigned long inferRequestsNum)
 	}
 	catch (...)
 	{
-		ret = false;
+		;
 	}
 
-	return ret;
+	return inferRequest;
 }
 
-bool MyOpenVINOImpl::SetInputData(const std::wstring &imageName)
+bool MyOpenVINOImpl::SetInputData(InferenceEngine::InferRequest  &inferRequest,const std::wstring &imageName)
 {
 	bool ret = true;
 
@@ -356,13 +353,13 @@ bool  MyOpenVINOImpl::GetOutput(InferenceEngine::InferRequest &ir)
 
 void  MyOpenVINOImpl::InferASyncLocal(int inferID)
 {
-	std::wstring imageName = inferMap[inferID];
-	SetInputData(imageName);
-	inferRequest.StartAsync();
+	InferInfo inferInfo = inferMap[inferID];
+	SetInputData(inferInfo.inferRequest, inferInfo.inputImage);
+	inferInfo.inferRequest.StartAsync();
 	std::vector<float> outputVect;
-	inferRequest.Wait(InferenceEngine::IInferRequest::WaitMode::RESULT_READY);
-	InferenceEngine::SizeVector dims = inferRequest.GetBlob(outputLayerName)->getTensorDesc().getDims();
-	const float* oneHotVector = (inferRequest.GetBlob(outputLayerName))->buffer().as<float*>();
+	inferInfo.inferRequest.Wait(InferenceEngine::IInferRequest::WaitMode::RESULT_READY);
+	InferenceEngine::SizeVector dims = inferInfo.inferRequest.GetBlob(outputLayerName)->getTensorDesc().getDims();
+	const float* oneHotVector = (inferInfo.inferRequest.GetBlob(outputLayerName))->buffer().as<float*>();
 	int dim = dims[1];
 
 	for (int i = 0; i < dim; i++)

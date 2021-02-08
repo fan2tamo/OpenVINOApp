@@ -3,6 +3,24 @@
 #include <opencv2/opencv.hpp>
 #include "MyOpenVINO.h"
 
+class InferInfo
+{
+public:
+    InferenceEngine::InferRequest inferRequest;
+    std::wstring inputImage;
+
+    InferInfo()
+    {
+
+    }
+
+    InferInfo(InferenceEngine::InferRequest& iRequest, const std::wstring& iImange)
+    {
+        inferRequest = iRequest;
+        inputImage = iImange;
+    }
+};
+
 class MyOpenVINOImpl : public IMyOpenVINO
 {
 public:
@@ -15,20 +33,23 @@ public:
     int InferASync(const std::wstring &imageName);
     void SetInferCallBack(CallbackHandlerBase& callbackHandler);
     void WaitForEndOfInfer();
+
 private:
     int inferCounter;
     CallbackHandlerBase* pCallbackHandler;
 	InferenceEngine::Core core;
 	InferenceEngine::CNNNetwork network;
 	InferenceEngine::ExecutableNetwork executableNetwork;
-	InferenceEngine::InferRequest inferRequest;
 	NetworkInfo networkInfo;
 	std::string inputLayerName;
 	std::string outputLayerName;
     Layout inputLayout = Layout::NCHW;
     Precision inputPresicion = Precision::FP32;
-    std::map<int, std::wstring> inferMap;
+    std::map<int, InferInfo> inferMap;
     std::vector<std::thread *> threadVector;
+
+    // 推論同時実行数
+    const int INFER_NUM = 2;
 
     // Windows依存コード
     HANDLE semhd;
@@ -38,8 +59,8 @@ private:
 	bool SetDeviceSetting(const std::vector<Device>& devices, const unsigned long& threadNum, const bool& isMulti);
 	bool LoadNetwork(const std::vector<Device>& devices, const bool& isMulti);
 	bool SetOptimalNumberOfInferRequests(unsigned long &inferRequestNum);
-	bool CreateInferRequest(const unsigned long inferRequestNum);
-	bool SetInputData(const std::wstring& imageName);
+    InferenceEngine::InferRequest CreateInferRequest(const unsigned long inferRequestNum);
+	bool SetInputData(InferenceEngine::InferRequest& inferRequest, const std::wstring& imageName);
     bool GetOutput(InferenceEngine::InferRequest& iRequest);
     void  InferASyncLocal(int inferID);
     static InferenceEngine::Layout ConvertInferenceEngineLayout(Layout layout);

@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="MyOpenVINO.h" />
     <ClInclude Include="MyOpenVINOImpl.h" />
+    <ClInclude Include="Swig_wrap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
