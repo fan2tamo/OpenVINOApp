@@ -29,14 +29,15 @@ namespace OpenVINOAppNet
         }
 
         // dll側から呼ばれる
-        public override void InferCallBack(int inferID, bool isSuccessed, floatVector results)
+        public override void InferCallBack(int inferID, string inputImage, bool isSuccessed, floatVector results)
         {
             textBox.Dispatcher.Invoke((Action)(() =>
             {
                 int i = 0;
+                textBox.Text += $"CallBack   inferID[{inferID}] : [inputImage] = {inputImage}" + System.Environment.NewLine;
                 foreach (float result in results)
                 {
-                    textBox.Text += $"inferID[{inferID}] : [{i}] = {result:E4}" + System.Environment.NewLine;
+                    textBox.Text += $"CallBack   inferID[{inferID}] : [{i}] = {result:E4}" + System.Environment.NewLine;
                     i += 1;
                 }
                 textBox.Text += $"---------------------" + System.Environment.NewLine;
@@ -85,7 +86,6 @@ namespace OpenVINOAppNet
             networkInfo.inputPrecision = Precision.U8;
             networkInfo.outputLayout = Layout.NC;
             networkInfo.outputPrecision = Precision.FP32;
-            networkInfo.threadNum = 1;
             networkInfo.isMultiDevices = false;
             networkInfo.devices.Add(ConvertString2Device(deviceStr));
 
@@ -124,7 +124,7 @@ namespace OpenVINOAppNet
             networkInfo.inputPrecision = Precision.U8;
             networkInfo.outputLayout = Layout.NC;
             networkInfo.outputPrecision = Precision.FP32;
-            networkInfo.threadNum = 1;
+            networkInfo.threadNum = 0;
             networkInfo.isMultiDevices = false;
             networkInfo.devices.Add(ConvertString2Device(deviceStr));
 
@@ -134,13 +134,16 @@ namespace OpenVINOAppNet
 
 
             // instance.GetAvailableDevices();
-            instance.Initialize(networkInfo);
-            instance.SetInferCallBack(obj);
-
-            foreach (string inputImage in inputImageFiles)
+            Task.Run(() =>
             {
-                int inferID = instance.InferASync(inputImage);
-            }
+                instance.Initialize(networkInfo);
+                instance.SetInferCallBack(obj);
+
+                foreach (string inputImage in inputImageFiles)
+                {
+                    instance.InferASync(inputImage);
+                }
+            });           
         }
 
         private void Click_GetAvailableDevices(object sender, RoutedEventArgs e)

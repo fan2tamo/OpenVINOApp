@@ -43,8 +43,8 @@ public class CallbackHandlerBase : global::System.IDisposable {
     }
   }
 
-  public virtual void InferCallBack(int inferID, bool isSuccessed, floatVector results) {
-    MyOpenVINOPINVOKE.CallbackHandlerBase_InferCallBack(swigCPtr, inferID, isSuccessed, floatVector.getCPtr(results));
+  public virtual void InferCallBack(int inferID, string inputImageFile, bool isSuccessed, floatVector results) {
+    MyOpenVINOPINVOKE.CallbackHandlerBase_InferCallBack(swigCPtr, inferID, inputImageFile, isSuccessed, floatVector.getCPtr(results));
     if (MyOpenVINOPINVOKE.SWIGPendingException.Pending) throw MyOpenVINOPINVOKE.SWIGPendingException.Retrieve();
   }
 
@@ -64,13 +64,13 @@ public class CallbackHandlerBase : global::System.IDisposable {
     return hasDerivedMethod;
   }
 
-  private void SwigDirectorMethodInferCallBack(int inferID, bool isSuccessed, global::System.IntPtr results) {
-    InferCallBack(inferID, isSuccessed, new floatVector(results, true));
+  private void SwigDirectorMethodInferCallBack(int inferID, string inputImageFile, bool isSuccessed, global::System.IntPtr results) {
+    InferCallBack(inferID, inputImageFile, isSuccessed, new floatVector(results, false));
   }
 
-  public delegate void SwigDelegateCallbackHandlerBase_0(int inferID, bool isSuccessed, global::System.IntPtr results);
+  public delegate void SwigDelegateCallbackHandlerBase_0(int inferID, string inputImageFile, bool isSuccessed, global::System.IntPtr results);
 
   private SwigDelegateCallbackHandlerBase_0 swigDelegate0;
 
-  private static global::System.Type[] swigMethodTypes0 = new global::System.Type[] { typeof(int), typeof(bool), typeof(floatVector) };
+  private static global::System.Type[] swigMethodTypes0 = new global::System.Type[] { typeof(int), typeof(string), typeof(bool), typeof(floatVector) };
 }

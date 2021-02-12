@@ -14,12 +14,10 @@ MyOpenVINOImpl::MyOpenVINOImpl()
 {
 	this->pCallbackHandler = NULL;
 	inferCounter = 0;
-	semhd = CreateSemaphore(NULL, INFER_NUM, INFER_NUM, L"SemName");
 }
 
 MyOpenVINOImpl::~MyOpenVINOImpl()
 {	
-	CloseHandle(semhd);
 }
 
 /// <summary>
@@ -44,7 +42,7 @@ bool MyOpenVINOImpl::Initialize(const NetworkInfo &networkInfo)
 	}
 	
 	
-	ret = SetDeviceSetting(networkInfo.devices, networkInfo.threadNum, networkInfo.isMultiDevices);
+	ret = SetDeviceConfig(networkInfo.devices, networkInfo.threadNum, networkInfo.isMultiDevices);
 	if (ret == false)
 	{
 		return ret;
@@ -60,9 +58,9 @@ bool MyOpenVINOImpl::Initialize(const NetworkInfo &networkInfo)
 /// </summary>
 /// <param name="imageName"></param>
 /// <returns></returns>
-std::vector<float>  MyOpenVINOImpl::InferSync(const std::wstring& imageName)
+std::vector<float>  MyOpenVINOImpl::InferSync(const std::string& imageName)
 {
-	InferenceEngine::InferRequest inferRequest = CreateInferRequest(networkInfo.inferRequestNum);
+	InferenceEngine::InferRequest inferRequest = CreateInferRequest();
 
 	SetInputData(inferRequest, imageName);
 	inferRequest.Infer();
@@ -93,22 +91,20 @@ void MyOpenVINOImpl::SetInferCallBack(CallbackHandlerBase& callbackHandler)
 /// </summary>
 /// <param name="imageName"></param>
 /// <returns></returns>
-int MyOpenVINOImpl::InferASync(const std::wstring& imageName)
+int MyOpenVINOImpl::InferASync(const std::string& imageName)
 {
 	int inferID = inferCounter;
 	inferCounter += 1;
 
-	InferenceEngine::InferRequest inferRequest = CreateInferRequest(networkInfo.inferRequestNum);
+	InferenceEngine::InferRequest inferRequest = CreateInferRequest();
 
 	InferInfo inferInfo(inferRequest, imageName);
 	inferMap[inferID] = inferInfo;
 	std::thread* th = NULL;
 
-	// 永久に待つ
-	DWORD ret = WaitForSingleObject(semhd, INFINITE);
-
+	// 現状はInferASync()が実行されるたびにスレッドを作ってその中でStartAsync()をしている。
+	// スレッドを作るコストは高いので、本当はthreadNumだけWorkerスレッド作って、ということをするべき。
 	th =new std::thread(&MyOpenVINOImpl::InferASyncLocal, this, inferID);
-	//threadVector.push_back(th);
 	threadVector.push_back(std::move(th));
 	return inferID;
 }
@@ -144,22 +140,22 @@ std::vector<Device> MyOpenVINOImpl::GetAvailableDevices()
 
 }
 
-bool MyOpenVINOImpl::ReadNetwork(const std::wstring &modelName)
+bool MyOpenVINOImpl::ReadNetwork(const std::string &modelName)
 {
 	bool ret = true;
 
 	try
 	{
-		if (modelName.find(L".onnx") == std::wstring::npos)
+		if (modelName.find(".onnx") == std::string::npos)
 		{
 			// IR
-			std::wstring binName = modelName.substr(0, modelName.length() - 4) + L".bin";
+			std::string binName = modelName.substr(0, modelName.length() - 4) + ".bin";
 			network = core.ReadNetwork(modelName, binName);
 		}
 		else
 		{
 			// onnx
-			network = core.ReadNetwork(modelName, NULL);
+			network = core.ReadNetwork(modelName);
 		}
 	}
 	catch (InferenceEngine::details::InferenceEngineException e)
@@ -208,7 +204,14 @@ bool MyOpenVINOImpl::SetNetworkConfiguration(const Layout&  iLayout, const Preci
 	return ret;
 }
 
-bool MyOpenVINOImpl::SetDeviceSetting(const std::vector<Device>& devices,  const unsigned long& threadNum , const bool &isMulti )
+/// <summary>
+/// https://docs.openvinotoolkit.org/latest/openvino_docs_optimization_guide_dldt_optimization_guide.html
+/// </summary>
+/// <param name="devices"></param>
+/// <param name="threadNum"></param>
+/// <param name="isMulti"></param>
+/// <returns></returns>
+bool MyOpenVINOImpl::SetDeviceConfig(const std::vector<Device>& devices,  const unsigned long& threadNum , const bool &isMulti )
 {
 	for (auto& device : devices)
 	{
@@ -216,12 +219,19 @@ bool MyOpenVINOImpl::SetDeviceSetting(const std::vector<Device>& devices,  const
 		switch (device)
 		{
 		case Device::CPU:
+			// Check following link.
+			// https://docs.openvinotoolkit.org/latest/openvino_docs_IE_DG_supported_plugins_CPU.html
+
+
 			// CPU supports a few special performance-oriented keys
 			// limit threading for CPU portion of inference
 			if (threadNum != 0)
 			{
-				core.SetConfig({ { CONFIG_KEY(CPU_THREADS_NUM), std::to_string(threadNum) } }, deviceStr);
+				core.SetConfig({ { CONFIG_KEY(CPU_THREADS_NUM), std::to_string(threadNum) } }, "CPU");
 			}
+
+			core.SetConfig({ { CONFIG_KEY(CPU_THROUGHPUT_STREAMS),CONFIG_VALUE(CPU_THROUGHPUT_AUTO) } }, "CPU");
+
 
 			if (isMulti == true && std::find(devices.begin(), devices.end(), Device::GPU) != devices.end())
 			{
@@ -246,6 +256,10 @@ bool MyOpenVINOImpl::SetDeviceSetting(const std::vector<Device>& devices,  const
 			break;
 
 		case Device::GPU:
+			// Check following link.
+			// https://docs.openvinotoolkit.org/latest/openvino_docs_IE_DG_supported_plugins_CL_DNN.html
+
+
 			// TODO : 解読しないといけないけど、よくわかんない・・・
 			core.SetConfig({{ CONFIG_KEY(GPU_THROUGHPUT_STREAMS),CONFIG_VALUE(GPU_THROUGHPUT_AUTO) } }, "GPU");
 
@@ -288,26 +302,24 @@ bool MyOpenVINOImpl::LoadNetwork(const std::vector<Device>& devices, const bool 
 	return ret;
 }
 
-bool MyOpenVINOImpl::SetOptimalNumberOfInferRequests(unsigned long &inferRequestNum)
+unsigned long MyOpenVINOImpl::GetOptimalNumberOfInferRequests()
 {
-	bool ret = true;
+	unsigned long  ret = 1;
 
-	if (inferRequestNum == 0) 
+	std::string key = METRIC_KEY(OPTIMAL_NUMBER_OF_INFER_REQUESTS);
+	try
 	{
-		std::string key = METRIC_KEY(OPTIMAL_NUMBER_OF_INFER_REQUESTS);
-		try {
-			inferRequestNum = executableNetwork.GetMetric(key).as<unsigned int>();
-		}
-		catch (...) 
-		{
-			ret = false;
-		}
+		ret = executableNetwork.GetMetric(key).as<unsigned int>();
+	}
+	catch (...)
+	{
+		ret = 0;
 	}
 
 	return ret;
 }
 
-InferenceEngine::InferRequest MyOpenVINOImpl::CreateInferRequest(const unsigned long inferRequestsNum)
+InferenceEngine::InferRequest MyOpenVINOImpl::CreateInferRequest()
 {
 	bool ret = true;
 	InferenceEngine::InferRequest inferRequest;
@@ -329,12 +341,10 @@ InferenceEngine::InferRequest MyOpenVINOImpl::CreateInferRequest(const unsigned 
 	return inferRequest;
 }
 
-bool MyOpenVINOImpl::SetInputData(InferenceEngine::InferRequest  &inferRequest,const std::wstring &imageName)
+bool MyOpenVINOImpl::SetInputData(InferenceEngine::InferRequest  &inferRequest,const std::string &imageName)
 {
 	bool ret = true;
-
-	std::string multiCharStr = std::string(ConvertWideChar2MultiChar(imageName, CP_UTF8));
-	cv::Mat imageData = cv::imread(multiCharStr);
+	cv::Mat imageData = cv::imread(imageName);
 
 	InferenceEngine::Blob::Ptr inputBlob = inferRequest.GetBlob(inputLayerName);
 	matU8ToBlob<uint8_t>(imageData, inputBlob);
@@ -353,25 +363,33 @@ bool  MyOpenVINOImpl::GetOutput(InferenceEngine::InferRequest &ir)
 
 void  MyOpenVINOImpl::InferASyncLocal(int inferID)
 {
-	InferInfo inferInfo = inferMap[inferID];
-	SetInputData(inferInfo.inferRequest, inferInfo.inputImage);
-	inferInfo.inferRequest.StartAsync();
+	bool successed = true;
 	std::vector<float> outputVect;
-	inferInfo.inferRequest.Wait(InferenceEngine::IInferRequest::WaitMode::RESULT_READY);
-	InferenceEngine::SizeVector dims = inferInfo.inferRequest.GetBlob(outputLayerName)->getTensorDesc().getDims();
-	const float* oneHotVector = (inferInfo.inferRequest.GetBlob(outputLayerName))->buffer().as<float*>();
-	int dim = dims[1];
-
-	for (int i = 0; i < dim; i++)
+	std::string inputImage;
+	try
 	{
-		outputVect.push_back(oneHotVector[i]);
-	}
+		InferInfo inferInfo = inferMap[inferID];
+		inputImage = inferInfo.inputImage;
+		SetInputData(inferInfo.inferRequest, inputImage);
+		inferInfo.inferRequest.StartAsync();		
+		inferInfo.inferRequest.Wait(InferenceEngine::IInferRequest::WaitMode::RESULT_READY);
+		InferenceEngine::SizeVector dims = inferInfo.inferRequest.GetBlob(outputLayerName)->getTensorDesc().getDims();
+		const float* oneHotVector = (inferInfo.inferRequest.GetBlob(outputLayerName))->buffer().as<float*>();
+		int dim = dims[1];
 
-	ReleaseSemaphore(semhd, 1, NULL);
+		for (int i = 0; i < dim; i++)
+		{
+			outputVect.push_back(oneHotVector[i]);
+		}
+	}
+	catch (...)
+	{
+		successed = false;
+	}
 
 	if (pCallbackHandler != NULL)
 	{
-		pCallbackHandler->InferCallBack(inferID, true,  outputVect);
+		pCallbackHandler->InferCallBack(inferID, inputImage  , successed,  outputVect);
 	}
 
 	return ;
@@ -527,16 +545,6 @@ std::string MyOpenVINOImpl::ConvertDevices2String(std::vector<Device> devices, b
 	deviceStr.pop_back();
 
 	return deviceStr;
-}
-
-std::string MyOpenVINOImpl::ConvertWideChar2MultiChar(const std::wstring& wideCharString, const unsigned long code)
-{
-	char buf[1024];
-	std::string multiCharStr;
-	WideCharToMultiByte(code, 0, wideCharString.c_str(), -1, buf, 1024, NULL, NULL);
-	multiCharStr = buf;
-	return multiCharStr;
-
 }
 
 #pragma endregion

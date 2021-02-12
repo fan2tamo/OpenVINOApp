@@ -192,29 +192,8 @@ class MyOpenVINOPINVOKE {
   }
 
 
-  protected class SWIGWStringHelper {
-
-    [return: global::System.Runtime.InteropServices.MarshalAs(global::System.Runtime.InteropServices.UnmanagedType.LPWStr)]
-    public delegate string SWIGWStringDelegate(global::System.IntPtr message);
-    static SWIGWStringDelegate wstringDelegate = new SWIGWStringDelegate(CreateWString);
-
-    [global::System.Runtime.InteropServices.DllImport("MyOpenVINO", EntryPoint="SWIGRegisterWStringCallback_MyOpenVINO")]
-    public static extern void SWIGRegisterWStringCallback_MyOpenVINO(SWIGWStringDelegate wstringDelegate);
-
-    static string CreateWString([global::System.Runtime.InteropServices.MarshalAs(global::System.Runtime.InteropServices.UnmanagedType.LPWStr)]global::System.IntPtr cString) {
-      return global::System.Runtime.InteropServices.Marshal.PtrToStringUni(cString);
-    }
-
-    static SWIGWStringHelper() {
-      SWIGRegisterWStringCallback_MyOpenVINO(wstringDelegate);
-    }
-  }
-
-  static protected SWIGWStringHelper swigWStringHelper = new SWIGWStringHelper();
-
-
   [global::System.Runtime.InteropServices.DllImport("MyOpenVINO", EntryPoint="CSharp_CallbackHandlerBase_InferCallBack")]
-  public static extern void CallbackHandlerBase_InferCallBack(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, bool jarg3, global::System.Runtime.InteropServices.HandleRef jarg4);
+  public static extern void CallbackHandlerBase_InferCallBack(global::System.Runtime.InteropServices.HandleRef jarg1, int jarg2, string jarg3, bool jarg4, global::System.Runtime.InteropServices.HandleRef jarg5);
 
   [global::System.Runtime.InteropServices.DllImport("MyOpenVINO", EntryPoint="CSharp_new_CallbackHandlerBase")]
   public static extern global::System.IntPtr new_CallbackHandlerBase();
@@ -226,10 +205,9 @@ class MyOpenVINOPINVOKE {
   public static extern void CallbackHandlerBase_director_connect(global::System.Runtime.InteropServices.HandleRef jarg1, CallbackHandlerBase.SwigDelegateCallbackHandlerBase_0 delegate0);
 
   [global::System.Runtime.InteropServices.DllImport("MyOpenVINO", EntryPoint="CSharp_NetworkInfo_modelName_set")]
-  public static extern void NetworkInfo_modelName_set(global::System.Runtime.InteropServices.HandleRef jarg1, [global::System.Runtime.InteropServices.MarshalAs(global::System.Runtime.InteropServices.UnmanagedType.LPWStr)]string jarg2);
+  public static extern void NetworkInfo_modelName_set(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("MyOpenVINO", EntryPoint="CSharp_NetworkInfo_modelName_get")]
-  [return: global::System.Runtime.InteropServices.MarshalAs(global::System.Runtime.InteropServices.UnmanagedType.LPWStr)]
   public static extern string NetworkInfo_modelName_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("MyOpenVINO", EntryPoint="CSharp_NetworkInfo_inputLayout_set")]
@@ -274,12 +252,6 @@ class MyOpenVINOPINVOKE {
   [global::System.Runtime.InteropServices.DllImport("MyOpenVINO", EntryPoint="CSharp_NetworkInfo_threadNum_get")]
   public static extern uint NetworkInfo_threadNum_get(global::System.Runtime.InteropServices.HandleRef jarg1);
 
-  [global::System.Runtime.InteropServices.DllImport("MyOpenVINO", EntryPoint="CSharp_NetworkInfo_inferRequestNum_set")]
-  public static extern void NetworkInfo_inferRequestNum_set(global::System.Runtime.InteropServices.HandleRef jarg1, uint jarg2);
-
-  [global::System.Runtime.InteropServices.DllImport("MyOpenVINO", EntryPoint="CSharp_NetworkInfo_inferRequestNum_get")]
-  public static extern uint NetworkInfo_inferRequestNum_get(global::System.Runtime.InteropServices.HandleRef jarg1);
-
   [global::System.Runtime.InteropServices.DllImport("MyOpenVINO", EntryPoint="CSharp_new_NetworkInfo")]
   public static extern global::System.IntPtr new_NetworkInfo();
 
@@ -293,10 +265,10 @@ class MyOpenVINOPINVOKE {
   public static extern global::System.IntPtr IMyOpenVINO_GetAvailableDevices(global::System.Runtime.InteropServices.HandleRef jarg1);
 
   [global::System.Runtime.InteropServices.DllImport("MyOpenVINO", EntryPoint="CSharp_IMyOpenVINO_InferASync")]
-  public static extern int IMyOpenVINO_InferASync(global::System.Runtime.InteropServices.HandleRef jarg1, [global::System.Runtime.InteropServices.MarshalAs(global::System.Runtime.InteropServices.UnmanagedType.LPWStr)]string jarg2);
+  public static extern int IMyOpenVINO_InferASync(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("MyOpenVINO", EntryPoint="CSharp_IMyOpenVINO_InferSync")]
-  public static extern global::System.IntPtr IMyOpenVINO_InferSync(global::System.Runtime.InteropServices.HandleRef jarg1, [global::System.Runtime.InteropServices.MarshalAs(global::System.Runtime.InteropServices.UnmanagedType.LPWStr)]string jarg2);
+  public static extern global::System.IntPtr IMyOpenVINO_InferSync(global::System.Runtime.InteropServices.HandleRef jarg1, string jarg2);
 
   [global::System.Runtime.InteropServices.DllImport("MyOpenVINO", EntryPoint="CSharp_IMyOpenVINO_SetInferCallBack")]
   public static extern void IMyOpenVINO_SetInferCallBack(global::System.Runtime.InteropServices.HandleRef jarg1, global::System.Runtime.InteropServices.HandleRef jarg2);

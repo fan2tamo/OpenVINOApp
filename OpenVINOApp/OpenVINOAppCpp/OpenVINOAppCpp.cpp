@@ -3,12 +3,12 @@
 
 #include <iostream>
 #include <Windows.h>
-#include "MyOpenVINO.h"
+#include "../MyOpenVINO/MyOpenVINO.h"
 
 class CallbackHandler: public CallbackHandlerBase
 {
 public:
-    void InferCallBack(int inferID, bool isSuccessed, std::vector<float> results) override
+    void InferCallBack(int inferID, const std::string& str, bool isSuccessed, const std::vector<float> &results) override
     {
         for (int i = 0; i < results.size(); i++)
         {
@@ -36,25 +36,25 @@ int main()
         exit(0);
     }
     
-    std::vector<std::wstring> inputImageFiles;
-    inputImageFiles.push_back(L"Image/img_0.png");
-    inputImageFiles.push_back(L"Image/img_1.png");
-    inputImageFiles.push_back(L"Image/img_2.png");
-    inputImageFiles.push_back(L"Image/img_3.png");
-    inputImageFiles.push_back(L"Image/img_4.png");
-    inputImageFiles.push_back(L"Image/img_5.png");
-    inputImageFiles.push_back(L"Image/img_6.png");
-    inputImageFiles.push_back(L"Image/img_7.png");
-    inputImageFiles.push_back(L"Image/img_8.png");
-    inputImageFiles.push_back(L"Image/img_9.png");
+    std::vector<std::string> inputImageFiles;
+    inputImageFiles.push_back("Image/img_0.png");
+    inputImageFiles.push_back("Image/img_1.png");
+    inputImageFiles.push_back("Image/img_2.png");
+    inputImageFiles.push_back("Image/img_3.png");
+    inputImageFiles.push_back("Image/img_4.png");
+    inputImageFiles.push_back("Image/img_5.png");
+    inputImageFiles.push_back("Image/img_6.png");
+    inputImageFiles.push_back("Image/img_7.png");
+    inputImageFiles.push_back("Image/img_8.png");
+    inputImageFiles.push_back("Image/img_9.png");
 
     NetworkInfo networkInfo;
-    networkInfo.modelName = L"Model\\mnist.xml";
+    networkInfo.modelName = "Model\\mnist.xml";
     networkInfo.inputLayout = Layout::NCHW;
     networkInfo.inputPrecision = Precision::U8;
     networkInfo.outputLayout = Layout::NC;
     networkInfo.outputPrecision = Precision::FP32;
-    networkInfo.threadNum = 1;
+    networkInfo.threadNum = 4;
     networkInfo.isMultiDevices = false;
     networkInfo.devices.push_back(Device::CPU);
 
@@ -64,7 +64,7 @@ int main()
     CallbackHandler inf;;
     instance->SetInferCallBack(inf);
 
-    for (std::wstring inputImageFile : inputImageFiles)
+    for (std::string inputImageFile : inputImageFiles)
     {
         instance->InferASync(inputImageFile);
         /*

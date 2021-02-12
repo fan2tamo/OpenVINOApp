@@ -299,19 +299,6 @@ SWIGEXPORT void SWIGSTDCALL SWIGRegisterStringCallback_MyOpenVINO(SWIG_CSharpStr
 
 #define SWIG_contract_assert(nullreturn, expr, msg) if (!(expr)) {SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentOutOfRangeException, msg, ""); return nullreturn; } else
 
-
-/* Callback for returning strings to C# without leaking memory */
-typedef void * (SWIGSTDCALL* SWIG_CSharpWStringHelperCallback)(const wchar_t *);
-static SWIG_CSharpWStringHelperCallback SWIG_csharp_wstring_callback = NULL;
-
-
-#ifdef __cplusplus
-extern "C"
-#endif
-SWIGEXPORT void SWIGSTDCALL SWIGRegisterWStringCallback_MyOpenVINO(SWIG_CSharpWStringHelperCallback callback) {
-  SWIG_csharp_wstring_callback = callback;
-}
-
 /* -----------------------------------------------------------------------------
  * director_common.swg
  *
@@ -611,19 +598,21 @@ SwigDirector_CallbackHandlerBase::SwigDirector_CallbackHandlerBase() : CallbackH
   swig_init_callbacks();
 }
 
-void SwigDirector_CallbackHandlerBase::InferCallBack(int inferID, bool isSuccessed, std::vector< float > results) {
+void SwigDirector_CallbackHandlerBase::InferCallBack(int inferID, std::string const &inputImageFile, bool isSuccessed, std::vector< float > const &results) {
   int jinferID  ;
+  char * jinputImageFile = 0 ;
   unsigned int jisSuccessed  ;
-  void * jresults  ;
+  void * jresults = 0 ;
   
   if (!swig_callbackInferCallBack) {
     Swig::DirectorPureVirtualException::raise("CallbackHandlerBase::InferCallBack");
     return;
   } else {
     jinferID = inferID;
+    jinputImageFile = SWIG_csharp_string_callback((&inputImageFile)->c_str()); 
     jisSuccessed = isSuccessed;
-    jresults = (void *)new std::vector< float >((const std::vector< float > &)results); 
-    swig_callbackInferCallBack(jinferID, jisSuccessed, jresults);
+    jresults = (std::vector< float > *) &results; 
+    swig_callbackInferCallBack(jinferID, jinputImageFile, jisSuccessed, jresults);
   }
 }
 
@@ -640,23 +629,28 @@ void SwigDirector_CallbackHandlerBase::swig_init_callbacks() {
 extern "C" {
 #endif
 
-SWIGEXPORT void SWIGSTDCALL CSharp_CallbackHandlerBase_InferCallBack(void * jarg1, int jarg2, unsigned int jarg3, void * jarg4) {
+SWIGEXPORT void SWIGSTDCALL CSharp_CallbackHandlerBase_InferCallBack(void * jarg1, int jarg2, char * jarg3, unsigned int jarg4, void * jarg5) {
   CallbackHandlerBase *arg1 = (CallbackHandlerBase *) 0 ;
   int arg2 ;
-  bool arg3 ;
-  std::vector< float > arg4 ;
-  std::vector< float > *argp4 ;
+  std::string *arg3 = 0 ;
+  bool arg4 ;
+  std::vector< float > *arg5 = 0 ;
   
   arg1 = (CallbackHandlerBase *)jarg1; 
   arg2 = (int)jarg2; 
-  arg3 = jarg3 ? true : false; 
-  argp4 = (std::vector< float > *)jarg4; 
-  if (!argp4) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "Attempt to dereference null std::vector< float >", 0);
+  if (!jarg3) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
     return ;
   }
-  arg4 = *argp4; 
-  (arg1)->InferCallBack(arg2,arg3,arg4);
+  std::string arg3_str(jarg3);
+  arg3 = &arg3_str; 
+  arg4 = jarg4 ? true : false; 
+  arg5 = (std::vector< float > *)jarg5;
+  if (!arg5) {
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "std::vector< float > const & type is null", 0);
+    return ;
+  } 
+  (arg1)->InferCallBack(arg2,(std::string const &)*arg3,arg4,(std::vector< float > const &)*arg5);
 }
 
 
@@ -685,29 +679,29 @@ SWIGEXPORT void SWIGSTDCALL CSharp_CallbackHandlerBase_director_connect(void *ob
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetworkInfo_modelName_set(void * jarg1, wchar_t * jarg2) {
+SWIGEXPORT void SWIGSTDCALL CSharp_NetworkInfo_modelName_set(void * jarg1, char * jarg2) {
   NetworkInfo *arg1 = (NetworkInfo *) 0 ;
-  std::wstring *arg2 = 0 ;
+  std::string *arg2 = 0 ;
   
   arg1 = (NetworkInfo *)jarg1; 
   if (!jarg2) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null wstring", 0);
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
     return ;
   }
-  std::wstring arg2_str(jarg2);
+  std::string arg2_str(jarg2);
   arg2 = &arg2_str; 
   if (arg1) (arg1)->modelName = *arg2;
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_NetworkInfo_modelName_get(void * jarg1) {
-  void * jresult ;
+SWIGEXPORT char * SWIGSTDCALL CSharp_NetworkInfo_modelName_get(void * jarg1) {
+  char * jresult ;
   NetworkInfo *arg1 = (NetworkInfo *) 0 ;
-  std::wstring *result = 0 ;
+  std::string *result = 0 ;
   
   arg1 = (NetworkInfo *)jarg1; 
-  result = (std::wstring *) & ((arg1)->modelName);
-  jresult = SWIG_csharp_wstring_callback(result->c_str()); 
+  result = (std::string *) & ((arg1)->modelName);
+  jresult = SWIG_csharp_string_callback(result->c_str()); 
   return jresult;
 }
 
@@ -866,28 +860,6 @@ SWIGEXPORT unsigned long SWIGSTDCALL CSharp_NetworkInfo_threadNum_get(void * jar
 }
 
 
-SWIGEXPORT void SWIGSTDCALL CSharp_NetworkInfo_inferRequestNum_set(void * jarg1, unsigned long jarg2) {
-  NetworkInfo *arg1 = (NetworkInfo *) 0 ;
-  unsigned long arg2 ;
-  
-  arg1 = (NetworkInfo *)jarg1; 
-  arg2 = (unsigned long)jarg2; 
-  if (arg1) (arg1)->inferRequestNum = arg2;
-}
-
-
-SWIGEXPORT unsigned long SWIGSTDCALL CSharp_NetworkInfo_inferRequestNum_get(void * jarg1) {
-  unsigned long jresult ;
-  NetworkInfo *arg1 = (NetworkInfo *) 0 ;
-  unsigned long result;
-  
-  arg1 = (NetworkInfo *)jarg1; 
-  result = (unsigned long) ((arg1)->inferRequestNum);
-  jresult = (unsigned long)result; 
-  return jresult;
-}
-
-
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_NetworkInfo() {
   void * jresult ;
   NetworkInfo *result = 0 ;
@@ -936,39 +908,39 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_IMyOpenVINO_GetAvailableDevices(void * jarg
 }
 
 
-SWIGEXPORT int SWIGSTDCALL CSharp_IMyOpenVINO_InferASync(void * jarg1, wchar_t * jarg2) {
+SWIGEXPORT int SWIGSTDCALL CSharp_IMyOpenVINO_InferASync(void * jarg1, char * jarg2) {
   int jresult ;
   IMyOpenVINO *arg1 = (IMyOpenVINO *) 0 ;
-  std::wstring *arg2 = 0 ;
+  std::string *arg2 = 0 ;
   int result;
   
   arg1 = (IMyOpenVINO *)jarg1; 
   if (!jarg2) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null wstring", 0);
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
     return 0;
   }
-  std::wstring arg2_str(jarg2);
+  std::string arg2_str(jarg2);
   arg2 = &arg2_str; 
-  result = (int)(arg1)->InferASync((std::wstring const &)*arg2);
+  result = (int)(arg1)->InferASync((std::string const &)*arg2);
   jresult = result; 
   return jresult;
 }
 
 
-SWIGEXPORT void * SWIGSTDCALL CSharp_IMyOpenVINO_InferSync(void * jarg1, wchar_t * jarg2) {
+SWIGEXPORT void * SWIGSTDCALL CSharp_IMyOpenVINO_InferSync(void * jarg1, char * jarg2) {
   void * jresult ;
   IMyOpenVINO *arg1 = (IMyOpenVINO *) 0 ;
-  std::wstring *arg2 = 0 ;
+  std::string *arg2 = 0 ;
   std::vector< float > result;
   
   arg1 = (IMyOpenVINO *)jarg1; 
   if (!jarg2) {
-    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null wstring", 0);
+    SWIG_CSharpSetPendingExceptionArgument(SWIG_CSharpArgumentNullException, "null string", 0);
     return 0;
   }
-  std::wstring arg2_str(jarg2);
+  std::string arg2_str(jarg2);
   arg2 = &arg2_str; 
-  result = (arg1)->InferSync((std::wstring const &)*arg2);
+  result = (arg1)->InferSync((std::string const &)*arg2);
   jresult = new std::vector< float >((const std::vector< float > &)result); 
   return jresult;
 }

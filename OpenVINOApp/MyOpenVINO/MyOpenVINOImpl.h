@@ -7,14 +7,14 @@ class InferInfo
 {
 public:
     InferenceEngine::InferRequest inferRequest;
-    std::wstring inputImage;
+    std::string inputImage;
 
     InferInfo()
     {
 
     }
 
-    InferInfo(InferenceEngine::InferRequest& iRequest, const std::wstring& iImange)
+    InferInfo(InferenceEngine::InferRequest& iRequest, const std::string& iImange)
     {
         inferRequest = iRequest;
         inputImage = iImange;
@@ -29,8 +29,8 @@ public:
 	bool Initialize(const NetworkInfo &networkInfo);
 	std::vector<Device> GetAvailableDevices();
 	
-    std::vector<float> InferSync(const std::wstring& imageName);
-    int InferASync(const std::wstring &imageName);
+    std::vector<float> InferSync(const std::string& imageName);
+    int InferASync(const std::string &imageName);
     void SetInferCallBack(CallbackHandlerBase& callbackHandler);
     void WaitForEndOfInfer();
 
@@ -48,19 +48,13 @@ private:
     std::map<int, InferInfo> inferMap;
     std::vector<std::thread *> threadVector;
 
-    // 推論同時実行数
-    const int INFER_NUM = 2;
-
-    // Windows依存コード
-    HANDLE semhd;
-
-	bool ReadNetwork(const std::wstring &modelName);
+	bool ReadNetwork(const std::string &modelName);
 	bool SetNetworkConfiguration(const Layout& iLayout, const Precision& iPrecision, const Layout& oLayout, const Precision& oPrecision);
-	bool SetDeviceSetting(const std::vector<Device>& devices, const unsigned long& threadNum, const bool& isMulti);
+	bool SetDeviceConfig(const std::vector<Device>& devices, const unsigned long& threadNum, const bool& isMulti);
 	bool LoadNetwork(const std::vector<Device>& devices, const bool& isMulti);
-	bool SetOptimalNumberOfInferRequests(unsigned long &inferRequestNum);
-    InferenceEngine::InferRequest CreateInferRequest(const unsigned long inferRequestNum);
-	bool SetInputData(InferenceEngine::InferRequest& inferRequest, const std::wstring& imageName);
+    unsigned long GetOptimalNumberOfInferRequests();
+    InferenceEngine::InferRequest CreateInferRequest();
+	bool SetInputData(InferenceEngine::InferRequest& inferRequest, const std::string& imageName);
     bool GetOutput(InferenceEngine::InferRequest& iRequest);
     void  InferASyncLocal(int inferID);
     static InferenceEngine::Layout ConvertInferenceEngineLayout(Layout layout);
@@ -68,7 +62,6 @@ private:
 	static Device ConvertString2Device(std::string device);
 	static std::string ConvertDevice2String(Device device);
 	static std::string ConvertDevices2String(std::vector<Device> devices, bool isMulti);
-    static std::string ConvertWideChar2MultiChar(const std::wstring& wideCharString, const unsigned long code);
 };
 
 /**

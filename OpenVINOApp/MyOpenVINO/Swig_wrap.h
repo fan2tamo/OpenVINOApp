@@ -15,9 +15,9 @@ class SwigDirector_CallbackHandlerBase : public CallbackHandlerBase, public Swig
 
 public:
     SwigDirector_CallbackHandlerBase();
-    virtual void InferCallBack(int inferID, bool isSuccessed, std::vector< float > results);
+    virtual void InferCallBack(int inferID, std::string const &inputImageFile, bool isSuccessed, std::vector< float > const &results);
 
-    typedef void (SWIGSTDCALL* SWIG_Callback0_t)(int, unsigned int, void *);
+    typedef void (SWIGSTDCALL* SWIG_Callback0_t)(int, char *, unsigned int, void *);
     void swig_connect_director(SWIG_Callback0_t callbackInferCallBack);
 
 private:

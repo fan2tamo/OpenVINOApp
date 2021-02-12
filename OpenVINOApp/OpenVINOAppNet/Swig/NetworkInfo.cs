@@ -126,16 +126,6 @@ public class NetworkInfo : global::System.IDisposable {
     } 
   }
 
-  public uint inferRequestNum {
-    set {
-      MyOpenVINOPINVOKE.NetworkInfo_inferRequestNum_set(swigCPtr, value);
-    } 
-    get {
-      uint ret = MyOpenVINOPINVOKE.NetworkInfo_inferRequestNum_get(swigCPtr);
-      return ret;
-    } 
-  }
-
   public NetworkInfo() : this(MyOpenVINOPINVOKE.new_NetworkInfo(), true) {
   }
 

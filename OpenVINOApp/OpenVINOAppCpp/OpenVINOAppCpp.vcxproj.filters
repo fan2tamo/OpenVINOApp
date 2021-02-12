@@ -29,9 +29,4 @@
       <Filter>リソース ファイル</Filter>
     </Xml>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="MyOpenVINO.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-  </ItemGroup>
 </Project>

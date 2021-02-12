@@ -174,9 +174,6 @@ xcopy "C:\Program Files (x86)\Intel\openvino_2021\inference_engine\bin\intel64\$
     <Xml Include="Model\mnist.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MyOpenVINO.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\MyOpenVINO\MyOpenVINO.vcxproj">
       <Project>{4c7eadb5-c4a8-4b7e-acea-5942bf4a37c7}</Project>
     </ProjectReference>
