@@ -5,18 +5,50 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OpenVINOAppNet"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" 
+        Height="450" Width="800"
+        MinHeight="200" MinWidth="600" >
+
     <Grid>
-        <Button x:Name="button" Content="InferSync" HorizontalAlignment="Left" Margin="196,119,0,0" VerticalAlignment="Top" Click="Click_InferSync" Width="106"/>
-        <Button x:Name="button2" Content="InferASync" HorizontalAlignment="Left" Margin="324,119,0,0" VerticalAlignment="Top" Click="Click_InferASync"  Width="106"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="50,162,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" Width="656" Height="248" VerticalScrollBarVisibility="Visible"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="460" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
 
-        <Label x:Name="label1" Content="Image Folder Path" HorizontalAlignment="Left" Margin="50,59,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="inputImageDir" HorizontalAlignment="Left" Margin="161,59,0,0" Text="TextBox" TextWrapping="Wrap" VerticalAlignment="Top" Width="327" Height="47" HorizontalScrollBarVisibility="Visible"/>
-        <Button x:Name="button1" Content="GetAvailableDevices" HorizontalAlignment="Left" Margin="50,119,0,0" VerticalAlignment="Top" Width="130" Click="Click_GetAvailableDevices"/>
-        <RadioButton x:Name="rbtn_CPU"  Content="CPU" HorizontalAlignment="Left" Margin="557,47,0,0" VerticalAlignment="Top" IsEnabled="False"/>
-        <RadioButton x:Name="rbtn_GPU"  Content="GPU" HorizontalAlignment="Left" Margin="557,68,0,0" VerticalAlignment="Top" IsEnabled="False"/>
-        <RadioButton x:Name="rbtn_VPU"  Content="MYRIAD" HorizontalAlignment="Left" Margin="557,88,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+        <Grid Grid.Row="0" Grid.Column="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label x:Name="label1" Content="Image Folder Path" Grid.Column="0" HorizontalAlignment="Left" Margin="5,16,0,0" VerticalAlignment="Top"/>
+            <Grid Grid.Column="1" >
+                <TextBox x:Name="inputImageDir" HorizontalAlignment="Left" Grid.Column="1" Text="" TextWrapping="Wrap" VerticalAlignment="Top" 
+                         Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=ActualWidth}"
+                         Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=ActualHeight}" HorizontalScrollBarVisibility="Visible"/>
+            </Grid>
+        </Grid>
 
+        <Grid Grid.Row="1" Grid.Column="0" >
+            <Button x:Name="button1" Content="GetAvailableDevices" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Width="130" Click="Click_GetAvailableDevices"/>
+            <Button x:Name="button" Content="InferSync" HorizontalAlignment="Left"  VerticalAlignment="Top" Click="Click_InferSync" Width="130" Margin="150,5,0,0"/>
+            <Button x:Name="button2" Content="InferASync" HorizontalAlignment="Left"  VerticalAlignment="Top" Click="Click_InferASync"  Width="130" Margin="290,5,0,0"/>
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.Column="1" >
+            <RadioButton x:Name="rbtn_CPU"  Content="CPU" HorizontalAlignment="Left" Margin="10,20,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+            <RadioButton x:Name="rbtn_GPU"  Content="GPU" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+            <RadioButton x:Name="rbtn_VPU"  Content="MYRIAD" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+        </Grid>
+
+        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" >
+            <TextBox x:Name="textBox" HorizontalAlignment="Left" Margin="5,0,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" 
+                     Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=ActualWidth}"  
+                     Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=ActualHeight}" VerticalScrollBarVisibility="Visible"/>
+        </Grid>
     </Grid>
 </Window>
