@@ -1,127 +1,159 @@
 <?xml version="1.0" ?>
 <mapping>
 	<map>
-		<framework name="dense/kernel:0" out_port_id="dense/kernel:0"/>
-		<IR id="30" name="dense/1_port_transpose1203_const" out_port_id="1"/>
+		<framework name="functional_3/dense_2/MatMul" out_port_id="0"/>
+		<IR id="37" name="functional_3/dense_2/MatMul" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="convolution_output3" out_port_id="convolution_output3"/>
-		<IR id="4" name="conv2d" out_port_id="2"/>
+		<framework name="functional_3/conv2d_10/Conv2D/ReadVariableOp" out_port_id="0"/>
+		<IR id="23" name="functional_3/conv2d_10/Conv2D/Transpose1867_const" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="dense/Relu:0" out_port_id="dense/Relu:0"/>
-		<IR id="40" name="Relu1" out_port_id="1"/>
+		<framework name="functional_3/re_lu_10/Relu" out_port_id="0"/>
+		<IR id="27" name="functional_3/re_lu_10/Relu" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="dense_10" out_port_id="dense_10"/>
-		<IR id="42" name="dense_1" out_port_id="2"/>
+		<framework name="functional_3/conv2d_8/Conv2D" out_port_id="0"/>
+		<IR id="13" name="functional_3/conv2d_8/Conv2D" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="batch_normalization/cond/Identity:0" out_port_id="batch_normalization/cond/Identity:0"/>
-		<IR id="15" name="batch_normalization/variance/Fused_Add_" out_port_id="2"/>
+		<framework name="functional_3/conv2d_7/Conv2D" out_port_id="0"/>
+		<IR id="7" name="functional_3/conv2d_7/Conv2D" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="conv2d_1/kernel:0" out_port_id="conv2d_1/kernel:0"/>
-		<IR id="6" name="conv2d_1/kernel:0/Output_0/Data__const" out_port_id="1"/>
+		<framework name="functional_3/conv2d_8/Conv2D/ReadVariableOp" out_port_id="0"/>
+		<IR id="12" name="functional_3/conv2d_8/Conv2D/Transpose1859_const" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="conv2d_1/Relu:0" out_port_id="conv2d_1/Relu:0"/>
-		<IR id="10" name="Relu4" out_port_id="1"/>
+		<framework name="functional_3/batch_normalization_8/FusedBatchNormV3" out_port_id="0"/>
+		<IR id="15" name="functional_3/conv2d_8/BiasAdd/Add/Fused_Add_" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="dense_1/bias:0" out_port_id="dense_1/bias:0"/>
-		<IR id="43" name="dense_1/bias:0/EltwiseUnsqueeze814_const" out_port_id="1"/>
+		<framework name="functional_3/re_lu_9/Relu" out_port_id="0"/>
+		<IR id="21" name="functional_3/re_lu_9/Relu" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="input_1" out_port_id="input_1"/>
-		<IR id="0" name="input_1" out_port_id="0"/>
+		<framework name="functional_3/batch_normalization_11/FusedBatchNormV3" out_port_id="0"/>
+		<IR id="31" name="functional_3/conv2d_11/BiasAdd/Add/Fused_Add_" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="conv2d_2/kernel:0" out_port_id="conv2d_2/kernel:0"/>
-		<IR id="16" name="conv2d_2/kernel:0/Output_0/Data__const" out_port_id="1"/>
+		<framework name="functional_3/dense_2/Relu" out_port_id="0"/>
+		<IR id="40" name="functional_3/dense_2/Relu" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="dense_1/Relu:0" out_port_id="dense_1/Relu:0"/>
-		<IR id="45" name="Relu" out_port_id="1"/>
+		<framework name="functional_3/dense_2/BiasAdd" out_port_id="0"/>
+		<IR id="39" name="functional_3/dense_2/BiasAdd/Add" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="dense/bias:0" out_port_id="dense/bias:0"/>
-		<IR id="38" name="dense/bias:0/EltwiseUnsqueeze810_const" out_port_id="1"/>
+		<framework name="functional_3/batch_normalization_9/FusedBatchNormV3" out_port_id="0"/>
+		<IR id="20" name="functional_3/conv2d_9/BiasAdd/Add/Fused_Add_" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="biased_tensor_name2" out_port_id="biased_tensor_name2"/>
-		<IR id="39" name="Add2" out_port_id="2"/>
+		<framework name="functional_3/conv2d_7/Conv2D/ReadVariableOp" out_port_id="0"/>
+		<IR id="6" name="functional_3/conv2d_7/Conv2D/Transpose1855_const" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="conv2d/kernel:0" out_port_id="conv2d/kernel:0"/>
-		<IR id="1" name="input_1/scale_value867869_const" out_port_id="1"/>
+		<framework name="functional_3/conv2d_11/Conv2D" out_port_id="0"/>
+		<IR id="29" name="functional_3/conv2d_11/Conv2D" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="dense_2/bias:0" out_port_id="dense_2/bias:0"/>
-		<IR id="48" name="dense_2/bias:0/EltwiseUnsqueeze818_const" out_port_id="1"/>
+		<framework name="functional_3/batch_normalization_7/FusedBatchNormV3" out_port_id="0"/>
+		<IR id="9" name="functional_3/conv2d_7/BiasAdd/Add/Fused_Add_" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="conv2d_3/Relu:0_pooling0" out_port_id="conv2d_3/Relu:0_pooling0"/>
-		<IR id="26" name="conv2d_3/Relu:0_pooling" out_port_id="1"/>
+		<framework name="functional_3/dense_3/MatMul" out_port_id="0"/>
+		<IR id="42" name="functional_3/dense_3/MatMul" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="conv2d_3/kernel:0" out_port_id="conv2d_3/kernel:0"/>
-		<IR id="21" name="conv2d_3/kernel:0/Output_0/Data__const" out_port_id="1"/>
+		<framework name="functional_3/dense_3/BiasAdd" out_port_id="0"/>
+		<IR id="44" name="functional_3/dense_3/BiasAdd/Add" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="convolution_output1" out_port_id="convolution_output1"/>
-		<IR id="19" name="conv2d_2" out_port_id="2"/>
+		<framework name="functional_3/max_pooling2d_3/MaxPool" out_port_id="0"/>
+		<IR id="11" name="functional_3/max_pooling2d_3/MaxPool" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="conv2d_1/Relu:0_pooling0" out_port_id="conv2d_1/Relu:0_pooling0"/>
-		<IR id="11" name="conv2d_1/Relu:0_pooling" out_port_id="1"/>
+		<framework name="x" out_port_id="0"/>
+		<IR id="0" name="x" out_port_id="0"/>
 	</map>
 	<map>
-		<framework name="convolution_output2" out_port_id="convolution_output2"/>
-		<IR id="9" name="conv2d_1" out_port_id="2"/>
+		<framework name="functional_3/dense_2/MatMul/ReadVariableOp" out_port_id="0"/>
+		<IR id="36" name="functional_3/dense_2/MatMul/1_port_transpose1965_const" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="flatten/Reshape:0" out_port_id="flatten/Reshape:0"/>
-		<IR id="36" name="flatten/Reshape" out_port_id="2"/>
+		<framework name="functional_3/batch_normalization_10/FusedBatchNormV3" out_port_id="0"/>
+		<IR id="26" name="functional_3/conv2d_10/BiasAdd/Add/Fused_Add_" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="dense_1/kernel:0" out_port_id="dense_1/kernel:0"/>
-		<IR id="41" name="dense_1/1_port_transpose1211_const" out_port_id="1"/>
+		<framework name="functional_3/re_lu_7/Relu" out_port_id="0"/>
+		<IR id="10" name="functional_3/re_lu_7/Relu" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="dense_20" out_port_id="dense_20"/>
-		<IR id="47" name="dense_240" out_port_id="2"/>
+		<framework name="functional_3/conv2d_6/Conv2D/ReadVariableOp" out_port_id="0"/>
+		<IR id="1" name="functional_3/conv2d_6/Conv2D/Transpose1851_const" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="dense_2/kernel:0" out_port_id="dense_2/kernel:0"/>
-		<IR id="46" name="dense_240/1_port_transpose1207_const" out_port_id="1"/>
+		<framework name="functional_3/dense_2/BiasAdd/ReadVariableOp" out_port_id="0"/>
+		<IR id="38" name="functional_3/dense_2/BiasAdd/ReadVariableOp/EltwiseUnsqueeze1533_const" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="biased_tensor_name1" out_port_id="biased_tensor_name1"/>
-		<IR id="44" name="Add1" out_port_id="2"/>
+		<framework name="functional_3/conv2d_6/Conv2D" out_port_id="0"/>
+		<IR id="2" name="functional_3/conv2d_6/Conv2D" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="conv2d_2/Relu:0" out_port_id="conv2d_2/Relu:0"/>
-		<IR id="20" name="Relu3" out_port_id="1"/>
+		<framework name="functional_3/re_lu_11/Relu" out_port_id="0"/>
+		<IR id="32" name="functional_3/re_lu_11/Relu" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="convolution_output" out_port_id="convolution_output"/>
-		<IR id="24" name="conv2d_3" out_port_id="2"/>
+		<framework name="functional_3/conv2d_9/Conv2D" out_port_id="0"/>
+		<IR id="18" name="functional_3/conv2d_9/Conv2D" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="dense_2" out_port_id="dense_2"/>
-		<IR id="61" name="dense_2" out_port_id="2"/>
+		<framework name="functional_3/conv2d_10/Conv2D" out_port_id="0"/>
+		<IR id="24" name="functional_3/conv2d_10/Conv2D" out_port_id="2"/>
 	</map>
 	<map>
-		<framework name="conv2d_3/Relu:0" out_port_id="conv2d_3/Relu:0"/>
-		<IR id="25" name="Relu2" out_port_id="1"/>
+		<framework name="functional_3/re_lu_8/Relu" out_port_id="0"/>
+		<IR id="16" name="functional_3/re_lu_8/Relu" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="dense0" out_port_id="dense0"/>
-		<IR id="37" name="dense" out_port_id="2"/>
+		<framework name="functional_3/conv2d_9/Conv2D/ReadVariableOp" out_port_id="0"/>
+		<IR id="17" name="functional_3/conv2d_9/Conv2D/Transpose1863_const" out_port_id="1"/>
 	</map>
 	<map>
-		<framework name="conv2d/Relu:0" out_port_id="conv2d/Relu:0"/>
-		<IR id="5" name="Relu5" out_port_id="1"/>
+		<framework name="Identity" out_port_id="0"/>
+		<IR id="45" name="functional_3/dense_3/Softmax" out_port_id="1"/>
+	</map>
+	<map>
+		<framework name="functional_3/dense_3/Softmax" out_port_id="0"/>
+		<IR id="45" name="functional_3/dense_3/Softmax" out_port_id="1"/>
+	</map>
+	<map>
+		<framework name="functional_3/batch_normalization_6/FusedBatchNormV3" out_port_id="0"/>
+		<IR id="4" name="functional_3/conv2d_6/BiasAdd/Add/Fused_Add_" out_port_id="2"/>
+	</map>
+	<map>
+		<framework name="functional_3/dense_3/BiasAdd/ReadVariableOp" out_port_id="0"/>
+		<IR id="43" name="functional_3/dense_3/BiasAdd/ReadVariableOp/EltwiseUnsqueeze1537_const" out_port_id="1"/>
+	</map>
+	<map>
+		<framework name="functional_3/global_average_pooling2d_1/Mean" out_port_id="0"/>
+		<IR id="35" name="functional_3/global_average_pooling2d_1/Mean" out_port_id="2"/>
+	</map>
+	<map>
+		<framework name="functional_3/dense_3/MatMul/ReadVariableOp" out_port_id="0"/>
+		<IR id="41" name="functional_3/dense_3/MatMul/1_port_transpose1969_const" out_port_id="1"/>
+	</map>
+	<map>
+		<framework name="functional_3/re_lu_6/Relu" out_port_id="0"/>
+		<IR id="5" name="functional_3/re_lu_6/Relu" out_port_id="1"/>
+	</map>
+	<map>
+		<framework name="functional_3/max_pooling2d_4/MaxPool" out_port_id="0"/>
+		<IR id="22" name="functional_3/max_pooling2d_4/MaxPool" out_port_id="1"/>
+	</map>
+	<map>
+		<framework name="functional_3/conv2d_11/Conv2D/ReadVariableOp" out_port_id="0"/>
+		<IR id="28" name="functional_3/conv2d_11/Conv2D/Transpose1871_const" out_port_id="1"/>
 	</map>
 </mapping>
