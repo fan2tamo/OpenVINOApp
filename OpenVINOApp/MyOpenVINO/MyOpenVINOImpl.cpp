@@ -40,8 +40,7 @@ bool MyOpenVINOImpl::Initialize(const NetworkInfo &networkInfo)
 	{
 		return ret;
 	}
-	
-	
+		
 	ret = SetDeviceConfig(networkInfo.devices, networkInfo.threadNum, networkInfo.isMultiDevices);
 	if (ret == false)
 	{
@@ -117,7 +116,9 @@ void MyOpenVINOImpl::WaitForEndOfInfer()
 	for (int i = 0; i < threadVector.size(); i++)
 	{
 		threadVector[i]->join();
+		delete threadVector[i];
 	}
+	threadVector.clear();
 }
 
 #pragma endregion
@@ -163,14 +164,12 @@ bool MyOpenVINOImpl::ReadNetwork(const std::string &modelName)
 		printf("Error ReadNetwork() : %s\r\n", e.what());
 		ret = false;
 	}
-
-	/*
 	catch (...)
 	{
 		printf("Error ReadNetwork() \r\n");
 		ret = false;
 	}
-	*/
+
 	return ret;
 }
 
@@ -326,12 +325,6 @@ InferenceEngine::InferRequest MyOpenVINOImpl::CreateInferRequest()
 	try
 	{
 		inferRequest = executableNetwork.CreateInferRequest();
-		/*
-		if (inputShape.empty())
-		{
-			inputShape = inferRequest.GetBlob(inputLayerName)->getTensorDesc().getDims();
-		}
-		*/
 	}
 	catch (...)
 	{
