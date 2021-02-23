@@ -18,7 +18,6 @@ using System.Windows.Threading;
 
 namespace OpenVINOAppNet
 {
-    
    public  class InferCallBackHandler : CallbackHandlerBase
     {
         private TextBox textBox;
@@ -37,7 +36,7 @@ namespace OpenVINOAppNet
                 textBox.Text += $"CallBack   inferID[{inferID}] : [inputImage] = {inputImage}" + System.Environment.NewLine;
                 foreach (float result in results)
                 {
-                    textBox.Text += $"CallBack   inferID[{inferID}] : [{i}] = {result:E4}" + System.Environment.NewLine;
+                    textBox.Text += $"CallBack   inferID[{inferID}] : [{i}] = {Math.Round(result, 4, MidpointRounding.AwayFromZero)}" + System.Environment.NewLine;
                     i += 1;
                 }
                 textBox.Text += $"---------------------" + System.Environment.NewLine;
@@ -108,7 +107,7 @@ namespace OpenVINOAppNet
                 foreach(float output in outputVec)
                 {
                     //textBox.Text += string.Format("{0} : {1:f4}", i, outputVec[i]) + System.Environment.NewLine;
-                    textBox.Text +=  $"[{i}] :  {output:E4}" + System.Environment.NewLine;
+                    textBox.Text +=  $"[{i}] :  {Math.Round(output, 4, MidpointRounding.AwayFromZero)}" + System.Environment.NewLine;
                     i++;
                 }
             }
